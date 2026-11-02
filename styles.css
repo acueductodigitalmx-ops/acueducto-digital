@@ -191,3 +191,9 @@ footer .brand b { color: var(--ink); }
   .pains { grid-template-columns: repeat(3, 1fr); }
 }
 @media (prefers-reduced-motion: reduce) { .giro, .wa-float { transition: none; } }
+
+/* Testimonio */
+.quote { margin: 18px 0 0; padding: 4px 0 4px 18px; border-left: 3px solid var(--cantera); }
+.quote p { margin: 0; font-size: 17px; line-height: 1.5; color: var(--on-night); }
+.quote footer { all: unset; display: block; margin-top: 8px; font-size: 14px; color: var(--on-night-muted); }
+.case.featured .quote p { font-size: 19px; }
