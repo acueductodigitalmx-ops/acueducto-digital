@@ -1,0 +1,303 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Acueducto Digital · Herramientas digitales para negocios de Querétaro</title>
+<meta name="description" content="Diseñamos páginas de citas y herramientas digitales a la medida para negocios de Querétaro. Con tu nombre, tus colores y sin complicaciones.">
+<meta name="theme-color" content="#161B24">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-12 -22 122 106'%3E%3Crect x='-12' y='-22' width='122' height='106' rx='22' fill='%23161B24'/%3E%3Cpath d='M3 10H95 M5 60V33A14.5 14.5 0 0 1 34 33V60 M34 33A14.5 14.5 0 0 1 63 33V60 M63 33A14.5 14.5 0 0 1 92 33V60' fill='none' stroke='%23E3A48A' stroke-width='6'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Jost:wght@300;400;500;600&display=swap">
+<style>
+/* Layout: noche (azul piedra) arriba, cantera clara abajo; una sola columna en celular, dos en escritorio */
+:root {
+  --night: #161B24;
+  --night-2: #1F2530;
+  --stone: #F4F1EE;
+  --paper: #FFFFFF;
+  --ink: #1B2029;
+  --muted: #6E6762;
+  --cantera: #E3A48A;
+  --cantera-deep: #9C5A40;
+  --on-night: #F2EAE4;
+  --on-night-muted: #A9A3A0;
+  --line: #E2DBD5;
+  --display: "Bricolage Grotesque", "Arial Black", system-ui, sans-serif;
+  --body: "Jost", "Futura", "Avenir Next", system-ui, sans-serif;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html { scroll-behavior: smooth; }
+body { margin: 0; background: var(--stone); color: var(--ink); font-family: var(--body); font-size: 17px; line-height: 1.6; font-weight: 400; }
+img { max-width: 100%; display: block; }
+a { color: inherit; }
+.wrap { max-width: 1100px; margin: 0 auto; padding-left: max(20px, env(safe-area-inset-left, 0px)); padding-right: max(20px, env(safe-area-inset-right, 0px)); }
+
+/* Marca */
+.brand { display: inline-flex; align-items: center; gap: 12px; text-decoration: none; }
+.brand svg { width: 44px; height: auto; flex: none; }
+.brand b { font-weight: 500; font-size: 15px; letter-spacing: .26em; }
+.brand span { font-weight: 400; font-size: 11px; letter-spacing: .4em; color: var(--cantera); margin-left: .4em; }
+
+/* Botones */
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 10px; font-family: var(--body); font-weight: 600; font-size: 15px; letter-spacing: .04em; text-decoration: none; border-radius: 999px; padding: 15px 26px; transition: transform .15s, background .15s; }
+.btn:hover { transform: translateY(-1px); }
+.btn:focus-visible { outline: 2px solid var(--cantera); outline-offset: 3px; }
+.btn-primary { background: var(--cantera); color: #2A1712; }
+.btn-ghost { border: 1px solid rgba(242,234,228,.35); color: var(--on-night); }
+.btn-dark { background: var(--night); color: var(--on-night); }
+.btn svg { width: 18px; height: 18px; }
+
+/* Encabezado + hero */
+.hero { background: var(--night); color: var(--on-night); position: relative; overflow: hidden; }
+.hero::after { content: ""; position: absolute; right: -200px; top: 80px; width: 700px; height: 700px; border-radius: 50%; background: radial-gradient(circle, rgba(227,164,138,.16), rgba(22,27,36,0) 65%); pointer-events: none; }
+.top { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding-block: 22px; position: relative; z-index: 1; }
+.top .btn { padding: 10px 18px; font-size: 14px; }
+.hero-grid { display: grid; gap: 40px; padding-block: 48px 72px; position: relative; z-index: 1; }
+.eyebrow { font-size: 13px; font-weight: 600; letter-spacing: .2em; text-transform: uppercase; color: var(--cantera); margin: 0; }
+h1 { font-family: var(--display); font-weight: 800; font-size: clamp(42px, 9vw, 76px); line-height: .98; letter-spacing: -.025em; margin: 16px 0 0; text-wrap: balance; }
+h1 em { font-style: normal; color: var(--cantera); }
+.lead { font-size: clamp(18px, 2.4vw, 21px); color: var(--on-night-muted); max-width: 34em; margin: 22px 0 0; }
+.hero-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 32px; }
+.arches { width: 100%; max-width: 440px; justify-self: center; align-self: center; color: var(--cantera); opacity: .9; }
+
+/* Secciones */
+section { padding-block: 80px; }
+.sec-head { max-width: 640px; }
+h2 { font-family: var(--display); font-weight: 700; font-size: clamp(30px, 5vw, 44px); line-height: 1.05; letter-spacing: -.02em; margin: 10px 0 0; text-wrap: balance; }
+.sec-head p { color: var(--muted); margin: 16px 0 0; }
+.kicker { font-size: 13px; font-weight: 600; letter-spacing: .2em; text-transform: uppercase; color: var(--cantera-deep); margin: 0; }
+
+/* Producto */
+.product { display: grid; gap: 40px; margin-top: 44px; align-items: start; }
+.features { list-style: none; padding: 0; margin: 0; display: grid; gap: 18px; }
+.features li { display: grid; grid-template-columns: 28px 1fr; gap: 14px; }
+.features li svg { width: 24px; height: 24px; color: var(--cantera-deep); margin-top: 2px; }
+.features b { display: block; font-weight: 600; }
+.features span { color: var(--muted); font-size: 16px; }
+.price { background: var(--night); color: var(--on-night); border-radius: 22px; padding: 30px 28px; display: flex; flex-direction: column; gap: 14px; }
+.price .tagline { font-size: 12px; font-weight: 600; letter-spacing: .18em; text-transform: uppercase; color: var(--cantera); }
+.price .big { font-family: var(--display); font-weight: 800; font-size: 60px; line-height: 1; letter-spacing: -.02em; }
+.price .big small { font-family: var(--body); font-size: 18px; font-weight: 500; letter-spacing: 0; margin-left: 6px; }
+.price s { color: var(--on-night-muted); font-size: 18px; margin-left: 8px; }
+.price .row { font-size: 17px; border-top: 1px solid rgba(242,234,228,.14); padding-top: 14px; }
+.price .row b { color: var(--cantera); font-weight: 600; }
+.price .note { font-size: 14px; color: var(--on-night-muted); margin: 0; }
+.price .btn { margin-top: 6px; }
+
+/* Cómo funciona */
+.steps { display: grid; gap: 16px; margin-top: 40px; counter-reset: s; }
+.step { background: var(--paper); border: 1px solid var(--line); border-radius: 18px; padding: 26px; }
+.step .n { font-family: var(--display); font-weight: 800; font-size: 34px; color: var(--cantera-deep); line-height: 1; }
+.step h3 { font-family: var(--display); font-weight: 700; font-size: 21px; margin: 14px 0 6px; }
+.step p { margin: 0; color: var(--muted); font-size: 16px; }
+
+/* Trabajos */
+.work { background: var(--night); color: var(--on-night); }
+.work .sec-head p { color: var(--on-night-muted); }
+.work .kicker { color: var(--cantera); }
+.cases { display: grid; gap: 28px; margin-top: 44px; }
+.case { background: var(--night-2); border-radius: 22px; padding: 26px; display: grid; gap: 22px; align-content: start; }
+.case .phone { background: #0b0d12; border-radius: 34px; padding: 10px; width: 100%; max-width: 270px; justify-self: center; box-shadow: 0 24px 50px rgba(0,0,0,.45); }
+.case .phone .screen { border-radius: 26px; overflow: hidden; aspect-ratio: 390 / 640; position: relative; }
+.case .phone img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: top; }
+.case .badge { display: inline-block; font-size: 11px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; border-radius: 999px; padding: 4px 11px; }
+.badge.real { background: var(--cantera); color: #2A1712; }
+.badge.demo { border: 1px solid rgba(242,234,228,.35); color: var(--on-night-muted); }
+.case h3 { font-family: var(--display); font-weight: 700; font-size: 26px; margin: 12px 0 6px; }
+.case p { margin: 0; color: var(--on-night-muted); font-size: 16px; }
+.case a.link { display: inline-block; margin-top: 14px; color: var(--cantera); font-weight: 500; }
+
+/* Próximamente */
+.more { display: grid; gap: 14px; margin-top: 36px; }
+.more div { border: 1px dashed #CBBFB6; border-radius: 16px; padding: 20px 22px; }
+.more b { font-family: var(--display); font-weight: 700; font-size: 18px; }
+.more span { display: block; color: var(--muted); font-size: 15px; margin-top: 4px; }
+
+/* Contacto */
+.contact { background: var(--cantera); color: #2A1712; border-radius: 28px; padding: 44px 30px; display: grid; gap: 22px; }
+.contact h2 { margin: 0; }
+.contact p { margin: 0; font-size: 18px; }
+.contact .who { font-family: var(--display); font-weight: 800; font-size: clamp(32px, 6vw, 48px); line-height: 1.05; letter-spacing: -.01em; font-variant-numeric: tabular-nums; }
+.contact .who small { display: block; font-family: var(--body); font-weight: 500; font-size: 17px; letter-spacing: 0; margin-bottom: 6px; }
+.contact .acts { display: flex; flex-wrap: wrap; gap: 12px; }
+
+footer { padding-block: 40px 56px; color: var(--muted); font-size: 14px; display: flex; flex-wrap: wrap; gap: 14px; justify-content: space-between; align-items: center; }
+footer .brand b { color: var(--ink); }
+
+@media (min-width: 820px) {
+  .hero-grid { grid-template-columns: 1.25fr .75fr; padding-block: 72px 110px; }
+  .product { grid-template-columns: 1.1fr .9fr; }
+  .steps { grid-template-columns: repeat(3, 1fr); }
+  .cases { grid-template-columns: repeat(3, 1fr); }
+  .case { grid-template-columns: 1fr; }
+  .more { grid-template-columns: repeat(2, 1fr); }
+  .contact { grid-template-columns: 1.2fr .8fr; align-items: center; padding: 56px; }
+}
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } .btn { transition: none; } }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="top">
+      <a class="brand" href="#" aria-label="Acueducto Digital, inicio">
+        <svg viewBox="0 0 98 62" aria-hidden="true"><path d="M3 10H95 M5 60V33A14.5 14.5 0 0 1 34 33V60 M34 33A14.5 14.5 0 0 1 63 33V60 M63 33A14.5 14.5 0 0 1 92 33V60" fill="none" stroke="#E3A48A" stroke-width="4"/></svg>
+        <b>ACUEDUCTO<span>DIGITAL</span></b>
+      </a>
+      <a class="btn btn-ghost" href="#contacto">Contacto</a>
+    </div>
+    <div class="hero-grid">
+      <div>
+        <p class="eyebrow">Querétaro · Herramientas digitales</p>
+        <h1>Tecnología a la medida de tu <em>negocio local.</em></h1>
+        <p class="lead">Diseñamos páginas y herramientas digitales para negocios de Querétaro. Con tu nombre, tus colores y sin complicaciones: tú atiendes, la herramienta trabaja.</p>
+        <div class="hero-actions">
+          <a class="btn btn-primary wa" href="#" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.1.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.2-.2-.4-.3Z"/></svg>
+            Platiquemos por WhatsApp
+          </a>
+          <a class="btn btn-ghost" href="#trabajos">Ver trabajos</a>
+        </div>
+      </div>
+      <svg class="arches" viewBox="0 0 300 150" aria-hidden="true">
+        <path d="M4 14H296" fill="none" stroke="currentColor" stroke-width="2.5"/>
+        <path d="M8 146V70A26 26 0 0 1 60 70V146 M60 70A26 26 0 0 1 112 70V146 M112 70A26 26 0 0 1 164 70V146 M164 70A26 26 0 0 1 216 70V146 M216 70A26 26 0 0 1 268 70V146" fill="none" stroke="currentColor" stroke-width="2.5"/>
+        <path d="M268 70A26 26 0 0 1 296 66" fill="none" stroke="currentColor" stroke-width="2.5" opacity=".4"/>
+      </svg>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section id="citas">
+    <div class="wrap">
+      <div class="sec-head">
+        <p class="kicker">Nuestro primer producto</p>
+        <h2>Tu página de citas en línea</h2>
+        <p>Tus clientes agendan solos desde el celular y tú solo confirmas. Ideal para salones, barberías, consultorios, nutriólogos, psicólogos, clases y cualquier negocio que trabaje con citas.</p>
+      </div>
+      <div class="product">
+        <ul class="features">
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><div><b>Con tu nombre, tus colores y tus servicios</b><span>Una página que se siente tuya, con su propio QR para tu mostrador y tus redes.</span></div></li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><div><b>Los horarios se apartan solos</b><span>Cuando alguien reserva, esa hora se bloquea al instante. Sin empalmes.</span></div></li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><div><b>Te llega a tu WhatsApp y a tu correo</b><span>Cada cita nueva te avisa con nombre, servicios, día y hora.</span></div></li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><div><b>Tu agenda con calendario</b><span>Confirmas o rechazas con un toque, y agregas citas que te llegan por teléfono.</span></div></li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><div><b>Sin apps que descargar</b><span>Tus clientes la abren desde el navegador. Tú también.</span></div></li>
+        </ul>
+        <div class="price">
+          <span class="tagline">Lanzamiento · solo 5 negocios</span>
+          <div class="big">$999<small>instalación</small><s>$1,999</s></div>
+          <div class="row"><b>$199 al mes</b>, congelado para siempre <s>$249</s></div>
+          <p class="note">Incluye hospedaje, soporte y cambios de precios, servicios u horarios.</p>
+          <a class="btn btn-primary wa" data-msg="Hola Daniel, me interesa la página de citas para mi negocio." href="#" target="_blank" rel="noopener">Quiero mi página de citas</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section style="padding-top:0">
+    <div class="wrap">
+      <div class="sec-head">
+        <p class="kicker">Cómo trabajamos</p>
+        <h2>Lista en menos de una semana</h2>
+      </div>
+      <div class="steps">
+        <div class="step"><div class="n">1</div><h3>Nos platicas tu negocio</h3><p>Tus servicios, precios, horarios y los colores que te representan.</p></div>
+        <div class="step"><div class="n">2</div><h3>La armamos contigo</h3><p>Diseñamos tu página y tu agenda, y la ajustamos hasta que te guste.</p></div>
+        <div class="step"><div class="n">3</div><h3>Compartes tu QR</h3><p>Lo pones en tu mostrador y en tus redes. Tus clientes empiezan a agendar solos.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="work" id="trabajos">
+    <div class="wrap">
+      <div class="sec-head">
+        <p class="kicker">Trabajos</p>
+        <h2>Lo que hemos hecho</h2>
+        <p>Cada herramienta se diseña con la identidad del negocio: su nombre, sus colores y sus productos o servicios.</p>
+      </div>
+      <div class="cases">
+        <article class="case">
+          <div class="phone"><div class="screen"><img src="img/maison-bel.jpg" alt="Página de reservas de Maison Bel: servicios de manos, pies y pestañas con precios" loading="lazy"></div></div>
+          <div>
+            <span class="badge real">Cliente real</span>
+            <h3>Maison Bel</h3>
+            <p>Estudio de uñas y pestañas en Querétaro. Página de reservas con su marca, agenda con calendario y avisos por WhatsApp y correo.</p>
+            <a class="link" href="https://maisonbel.netlify.app" target="_blank" rel="noopener">Ver la página en vivo →</a>
+          </div>
+        </article>
+        <article class="case">
+          <div class="phone"><div class="screen"><img src="img/catalogo-ejemplo.jpg" alt="Catálogo de ejemplo de una panadería con productos, precios y botón para agregar" loading="lazy"></div></div>
+          <div>
+            <span class="badge demo">Demo en vivo</span>
+            <h3>Catálogo con pedidos</h3>
+            <p>Para panaderías, comida, postres o cualquier negocio que venda productos: tus clientes arman su pedido, eligen recoger o envío a domicilio, y te llega completo por WhatsApp.</p>
+            <a class="link" href="https://la-espiga.pages.dev" target="_blank" rel="noopener">Probar la demo →</a>
+          </div>
+        </article>
+        <article class="case">
+          <div class="phone"><div class="screen"><img src="img/barberia-ejemplo.jpg" alt="Diseño de ejemplo para una barbería: cortes, fade y barba con precios" loading="lazy"></div></div>
+          <div>
+            <span class="badge demo">Diseño de ejemplo</span>
+            <h3>Barbería</h3>
+            <p>Así se vería el mismo sistema para una barbería: tonos oscuros, dorado y una tipografía con carácter. Tu negocio puede ser el siguiente.</p>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <div class="sec-head">
+        <p class="kicker">Próximamente</p>
+        <h2>Más herramientas para tu negocio</h2>
+        <p>Estamos preparando otras herramientas con la misma idea: sencillas, con tu marca y pensadas para negocios de aquí.</p>
+      </div>
+      <div class="more">
+        <div><b>Tarjeta de lealtad</b><span>Sellos digitales con QR: "junta 8 y el 9º es gratis".</span></div>
+        <div><b>Inscripciones</b><span>Para cursos, talleres y escuelitas: registro en línea y lista de quién ya pagó.</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="contacto" style="padding-top:0">
+    <div class="wrap">
+      <div class="contact">
+        <div>
+          <h2>¿Platicamos de tu negocio?</h2>
+          <p style="margin-top:12px">Escríbeme y te cuento cómo quedaría tu página, sin compromiso.</p>
+        </div>
+        <div style="display:grid;gap:18px">
+          <div class="who"><small>Daniel Pozaicer</small>442 389 4782</div>
+          <div class="acts">
+            <a class="btn btn-dark wa" href="#" target="_blank" rel="noopener">Escribir por WhatsApp</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="wrap">
+  <a class="brand" href="#" aria-label="Acueducto Digital">
+    <svg viewBox="0 0 98 62" aria-hidden="true"><path d="M3 10H95 M5 60V33A14.5 14.5 0 0 1 34 33V60 M34 33A14.5 14.5 0 0 1 63 33V60 M63 33A14.5 14.5 0 0 1 92 33V60" fill="none" stroke="#1B2029" stroke-width="4"/></svg>
+    <b>ACUEDUCTO<span>DIGITAL</span></b>
+  </a>
+  <span>Querétaro, México · © <span id="yr"></span> Acueducto Digital</span>
+</footer>
+
+<script>
+const WA = "524423894782";
+const DEFAULT_MSG = "Hola Daniel, vi la página de Acueducto Digital y me gustaría saber más.";
+document.querySelectorAll("a.wa").forEach(a => {
+  a.href = "https://wa.me/" + WA + "?text=" + encodeURIComponent(a.dataset.msg || DEFAULT_MSG);
+});
+document.getElementById("yr").textContent = new Date().getFullYear();
+</script>
+</body>
+</html>
