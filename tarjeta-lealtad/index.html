@@ -1,0 +1,600 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Café Mezquite · Tarjeta de lealtad</title>
+<meta name="description" content="Prototipo de tarjeta de lealtad digital de Acueducto Digital: sellos con QR, junta 8 y el 9º es gratis.">
+<meta name="theme-color" content="#2E2219">
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,800&family=Jost:wght@400;500;600&display=swap">
+<style>
+/* Marca de ejemplo (Café Mezquite). Para otro negocio solo cambian estos tokens y CONFIG en el script. */
+:root {
+  --brand: #2E2219;
+  --brand-2: #46342A;
+  --cream: #F6EFE6;
+  --paper: #FFFDF9;
+  --ink: #2A211B;
+  --muted: #7A6B60;
+  --accent: #C8693D;
+  --accent-ink: #FFF6EF;
+  --ok: #3F7D58;
+  --line: #E7DCCF;
+  --display: "Fraunces", Georgia, serif;
+  --body: "Jost", system-ui, sans-serif;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html, body { margin: 0; }
+body { background: var(--cream); color: var(--ink); font-family: var(--body); font-size: 16px; line-height: 1.5; min-height: 100vh; }
+button, input { font: inherit; color: inherit; }
+button { cursor: pointer; }
+.wrap { max-width: 460px; margin: 0 auto; padding: 0 16px 48px; }
+
+/* Barra de demo */
+.demo-bar { background: #161B24; color: #F2EAE4; font-size: 13px; }
+.demo-bar .in { max-width: 460px; margin: 0 auto; padding: 10px 16px; display: flex; gap: 10px; align-items: center; justify-content: space-between; flex-wrap: wrap; }
+.demo-bar a { color: #E3A48A; }
+.seg { display: inline-flex; background: rgba(255,255,255,.08); border-radius: 999px; padding: 3px; }
+.seg button { border: 0; background: none; color: #F2EAE4; padding: 6px 14px; border-radius: 999px; font-size: 13px; font-weight: 500; }
+.seg button[aria-pressed="true"] { background: #E3A48A; color: #2A1712; }
+
+/* Encabezado del negocio */
+.biz { display: flex; align-items: center; gap: 12px; padding: 22px 0 18px; }
+.logo { width: 46px; height: 46px; border-radius: 14px; background: var(--brand); display: grid; place-items: center; flex: none; }
+.logo svg { width: 26px; height: 26px; color: var(--accent); }
+.biz h1 { font-family: var(--display); font-weight: 800; font-size: 22px; line-height: 1.1; margin: 0; }
+.biz p { margin: 2px 0 0; color: var(--muted); font-size: 14px; }
+
+/* Tarjeta */
+.card { background: var(--brand); color: var(--cream); border-radius: 24px; padding: 22px 20px 20px; position: relative; overflow: hidden; box-shadow: 0 18px 40px rgba(46,34,25,.25); }
+.card::before { content: ""; position: absolute; right: -60px; top: -60px; width: 200px; height: 200px; border-radius: 50%; background: radial-gradient(circle, rgba(200,105,61,.35), transparent 70%); }
+.card-top { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; position: relative; }
+.card-top b { font-family: var(--display); font-weight: 600; font-size: 18px; }
+.card-top span { font-size: 13px; opacity: .7; letter-spacing: .08em; }
+.stamps { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin: 18px 0 16px; position: relative; }
+.slot { aspect-ratio: 1; border-radius: 50%; border: 2px dashed rgba(246,239,230,.35); display: grid; place-items: center; font-size: 13px; color: rgba(246,239,230,.5); }
+.slot svg { width: 58%; height: 58%; }
+.slot.on { border: 0; background: var(--accent); color: var(--accent-ink); transform: rotate(var(--r, -8deg)); }
+.slot.on.new { animation: stamp .5s cubic-bezier(.2,1.6,.4,1); }
+.slot.gift { border-style: solid; border-color: var(--accent); color: var(--accent); }
+.slot.gift.ready { background: var(--cream); color: var(--accent); border-color: var(--cream); animation: pulse 1.6s ease-in-out infinite; }
+@keyframes stamp { 0% { transform: scale(1.8) rotate(0); opacity: 0; } 100% { transform: scale(1) rotate(var(--r, -8deg)); opacity: 1; } }
+@keyframes pulse { 50% { box-shadow: 0 0 0 6px rgba(246,239,230,.18); } }
+.progress { font-size: 15px; position: relative; }
+.progress b { color: #F3B28F; }
+.holder { margin-top: 14px; padding-top: 14px; border-top: 1px solid rgba(246,239,230,.14); display: flex; justify-content: space-between; font-size: 13px; opacity: .8; position: relative; }
+
+/* QR */
+.qr-box { background: var(--paper); border: 1px solid var(--line); border-radius: 20px; padding: 20px; margin-top: 16px; display: grid; grid-template-columns: 116px 1fr; gap: 16px; align-items: center; }
+.qr { width: 116px; height: 116px; background: #fff; border-radius: 10px; padding: 4px; }
+.qr svg { width: 100%; height: 100%; display: block; }
+.qr-box h2 { font-family: var(--display); font-size: 17px; margin: 0 0 4px; }
+.qr-box p { margin: 0; color: var(--muted); font-size: 14px; }
+.code { font-family: ui-monospace, Menlo, monospace; font-size: 18px; font-weight: 600; letter-spacing: .1em; color: var(--ink); margin-top: 8px; }
+
+/* Bloques genéricos */
+.panel { background: var(--paper); border: 1px solid var(--line); border-radius: 20px; padding: 20px; margin-top: 16px; }
+.panel h2 { font-family: var(--display); font-size: 19px; margin: 0 0 4px; }
+.panel > p { margin: 0 0 14px; color: var(--muted); font-size: 14px; }
+label { display: block; font-size: 14px; font-weight: 500; margin: 12px 0 6px; }
+input[type=text], input[type=tel], input[type=number], input[type=password] { width: 100%; border: 1px solid var(--line); background: #fff; border-radius: 12px; padding: 12px 14px; font-size: 16px; }
+input:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.btn { border: 0; border-radius: 999px; padding: 13px 20px; font-weight: 600; font-size: 15px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+.btn-main { background: var(--accent); color: var(--accent-ink); }
+.btn-dark { background: var(--brand); color: var(--cream); }
+.btn-line { background: none; border: 1px solid var(--line); color: var(--ink); }
+.btn:disabled { opacity: .4; cursor: not-allowed; }
+.btn.block { width: 100%; margin-top: 16px; }
+.row { display: flex; gap: 10px; }
+.row > * { flex: 1; }
+.hint { font-size: 13px; color: var(--muted); margin-top: 10px; }
+.err { color: #B23B2A; font-size: 14px; margin-top: 8px; min-height: 1em; }
+.rules { list-style: none; padding: 0; margin: 0; display: grid; gap: 8px; font-size: 14px; color: var(--muted); }
+.rules li::before { content: "☕ "; }
+.history { list-style: none; padding: 0; margin: 0; font-size: 14px; }
+.history li { display: flex; justify-content: space-between; gap: 10px; padding: 9px 0; border-top: 1px solid var(--line); }
+.history li:first-child { border-top: 0; }
+.history time { color: var(--muted); white-space: nowrap; }
+.link { background: none; border: 0; color: var(--muted); text-decoration: underline; font-size: 13px; padding: 0; }
+
+/* Caja */
+.results { list-style: none; padding: 0; margin: 12px 0 0; }
+.results button { width: 100%; text-align: left; background: none; border: 0; border-top: 1px solid var(--line); padding: 11px 2px; display: flex; justify-content: space-between; gap: 10px; align-items: center; }
+.results li:first-child button { border-top: 0; }
+.results small { color: var(--muted); display: block; font-size: 13px; }
+.pill { font-size: 12px; font-weight: 600; border-radius: 999px; padding: 3px 10px; background: var(--cream); white-space: nowrap; }
+.pill.ready { background: var(--ok); color: #fff; }
+.mini { display: flex; gap: 5px; flex-wrap: wrap; margin: 12px 0 4px; }
+.mini i { width: 22px; height: 22px; border-radius: 50%; border: 2px dashed var(--line); }
+.mini i.on { background: var(--accent); border: 0; }
+.mini i.gift { border: 2px solid var(--accent); }
+.mini i.gift.ready { background: var(--ok); border-color: var(--ok); }
+.stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 16px; }
+.stats div { background: var(--paper); border: 1px solid var(--line); border-radius: 16px; padding: 14px 12px; }
+.stats b { display: block; font-family: var(--display); font-size: 24px; line-height: 1; }
+.stats span { font-size: 12px; color: var(--muted); }
+video { width: 100%; border-radius: 14px; background: #000; margin-top: 12px; }
+
+.toast { position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%) translateY(20px); background: var(--brand); color: var(--cream); padding: 12px 20px; border-radius: 999px; font-size: 15px; opacity: 0; transition: .25s; pointer-events: none; max-width: calc(100% - 32px); text-align: center; }
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+@media (prefers-reduced-motion: reduce) { .slot.on.new, .slot.gift.ready { animation: none; } .toast { transition: none; } }
+</style>
+</head>
+<body>
+
+<div class="demo-bar">
+  <div class="in">
+    <span>Prototipo · <a href="../">Acueducto Digital</a></span>
+    <div class="seg" role="group" aria-label="Cambiar vista">
+      <button type="button" data-view="cliente" aria-pressed="true">Cliente</button>
+      <button type="button" data-view="caja" aria-pressed="false">Negocio</button>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+  <header class="biz">
+    <div class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 9h13v5a6 6 0 0 1-6 6h-1a6 6 0 0 1-6-6V9Z"/><path d="M17 11h1.5a2.5 2.5 0 0 1 0 5H17"/><path d="M8 3c0 1.5 1 1.5 1 3M12 3c0 1.5 1 1.5 1 3"/></svg></div>
+    <div><h1 id="bizName">Café Mezquite</h1><p>Tarjeta de lealtad</p></div>
+  </header>
+
+  <!-- ===== Vista cliente ===== -->
+  <main id="vCliente">
+    <section id="signup" class="panel" hidden>
+      <h2>Saca tu tarjeta gratis</h2>
+      <p id="signupPitch">Junta sellos con cada compra y llévate un premio. Sin apps, sin tarjetas de papel.</p>
+      <form id="signupForm" novalidate>
+        <label for="suName">Tu nombre</label>
+        <input id="suName" type="text" autocomplete="given-name" placeholder="Ej. Mariana" required>
+        <label for="suPhone">Tu WhatsApp (10 dígitos)</label>
+        <input id="suPhone" type="tel" inputmode="numeric" autocomplete="tel-national" placeholder="442 123 4567" required>
+        <div class="err" id="suErr" role="alert"></div>
+        <button class="btn btn-main block" type="submit">Crear mi tarjeta</button>
+      </form>
+      <p class="hint">Si ya tenías tarjeta, usa el mismo número y la recuperamos.</p>
+    </section>
+
+    <section id="myCard" hidden>
+      <div class="card">
+        <div class="card-top"><b id="cReward"></b><span id="cCount"></span></div>
+        <div class="stamps" id="cStamps"></div>
+        <div class="progress" id="cProgress"></div>
+        <div class="holder"><span id="cName"></span><span id="cRewards"></span></div>
+      </div>
+
+      <div class="qr-box">
+        <div class="qr" id="cQr" aria-label="Código QR de tu tarjeta"></div>
+        <div>
+          <h2>Muéstralo en caja</h2>
+          <p>Cada compra suma un sello. Te escanean este código y listo.</p>
+          <div class="code" id="cCode"></div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h2>Cómo funciona</h2>
+        <ul class="rules" id="cRules"></ul>
+      </div>
+
+      <div class="panel">
+        <h2>Tus visitas</h2>
+        <ul class="history" id="cHistory"></ul>
+        <p class="hint" style="margin-top:16px"><button class="link" id="logout" type="button">Usar otro número en este celular</button></p>
+      </div>
+    </section>
+  </main>
+
+  <!-- ===== Vista negocio (caja) ===== -->
+  <main id="vCaja" hidden>
+    <section id="lock" class="panel">
+      <h2>Acceso de caja</h2>
+      <p>Solo el personal del negocio puede poner sellos.</p>
+      <form id="pinForm">
+        <label for="pin">PIN</label>
+        <input id="pin" type="password" inputmode="numeric" maxlength="6" autocomplete="off">
+        <div class="err" id="pinErr" role="alert"></div>
+        <button class="btn btn-dark block" type="submit">Entrar</button>
+      </form>
+      <p class="hint">PIN de la demo: <b>1234</b></p>
+    </section>
+
+    <section id="desk" hidden>
+      <div class="panel" style="margin-top:0">
+        <h2>Buscar cliente</h2>
+        <p>Escanea su QR o escribe su código, nombre o teléfono.</p>
+        <div class="row">
+          <input id="q" type="text" placeholder="Código, nombre o teléfono" autocomplete="off" aria-label="Buscar cliente">
+        </div>
+        <button class="btn btn-line block" id="scanBtn" type="button" style="margin-top:10px">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 8V5a1 1 0 0 1 1-1h3M16 4h3a1 1 0 0 1 1 1v3M20 16v3a1 1 0 0 1-1 1h-3M8 20H5a1 1 0 0 1-1-1v-3M7 12h10"/></svg>
+          Escanear QR
+        </button>
+        <video id="cam" playsinline muted hidden></video>
+        <div class="err" id="scanErr" role="alert"></div>
+        <ul class="results" id="results"></ul>
+      </div>
+
+      <div class="panel" id="sel" hidden>
+        <div style="display:flex;justify-content:space-between;gap:10px;align-items:start">
+          <div><h2 id="sName"></h2><p style="margin:0;color:var(--muted);font-size:14px" id="sMeta"></p></div>
+          <button class="link" id="sClose" type="button">Cerrar</button>
+        </div>
+        <div class="mini" id="sMini"></div>
+        <p style="margin:6px 0 0;font-size:15px" id="sStatus"></p>
+        <div class="row" style="margin-top:14px">
+          <button class="btn btn-main" id="addStamp" type="button">+ Poner sello</button>
+          <button class="btn btn-dark" id="redeem" type="button">Canjear premio</button>
+        </div>
+        <p class="hint"><button class="link" id="undo" type="button">Deshacer último movimiento</button></p>
+      </div>
+
+      <div class="stats">
+        <div><b id="stClients">0</b><span>clientes</span></div>
+        <div><b id="stToday">0</b><span>sellos hoy</span></div>
+        <div><b id="stRedeemed">0</b><span>premios dados</span></div>
+      </div>
+
+      <div class="panel">
+        <h2>Actividad reciente</h2>
+        <ul class="history" id="activity"></ul>
+      </div>
+
+      <div class="panel">
+        <h2>Configuración</h2>
+        <p>Así lo dejaría el dueño del negocio.</p>
+        <label for="cfgNeed">Sellos para ganar</label>
+        <input id="cfgNeed" type="number" min="3" max="14">
+        <label for="cfgReward">Premio</label>
+        <input id="cfgReward" type="text" maxlength="40">
+        <button class="btn btn-dark block" id="cfgSave" type="button">Guardar</button>
+        <div class="row" style="margin-top:14px">
+          <button class="btn btn-line" id="lockBtn" type="button">Cerrar caja</button>
+          <button class="btn btn-line" id="resetBtn" type="button">Reiniciar demo</button>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="qrcode.js"></script>
+<script>
+/* -------------------------------------------------------------------------
+   Prototipo: todo vive en localStorage de este navegador, para poder probar
+   cliente y caja en el mismo celular. En producción esto iría a un backend
+   (p. ej. una tabla de clientes y otra de movimientos) con el PIN validado
+   en el servidor.
+---------------------------------------------------------------------------*/
+const KEY = "acueducto-lealtad-demo-v1";
+const PIN = "1234";
+const ALPHABET = "ABCDEFGHJKMNPQRSTUVWXYZ23456789"; // sin 0/O, 1/I/L
+
+const CUP = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h13v5a6 6 0 0 1-6 6h-1a6 6 0 0 1-6-6V9Z"/><path d="M17 11h1.5a2.5 2.5 0 0 1 0 5H17"/></svg>';
+const GIFT = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="8" width="18" height="5" rx="1"/><path d="M5 13v7h14v-7M12 8v12M12 8S10.5 3.5 8 4.5 9 8 12 8Zm0 0s1.5-4.5 4-3.5S15 8 12 8Z"/></svg>';
+
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const digits = s => String(s).replace(/\D/g, "");
+const fmtPhone = p => p.replace(/(\d{3})(\d{3})(\d{4})/, "$1 $2 $3");
+const fmtCode = c => c.slice(0, 3) + "-" + c.slice(3);
+const normCode = s => String(s).toUpperCase().replace(/[^A-Z0-9]/g, "");
+const ordinal = n => n + "º";
+
+function load() {
+  try {
+    const d = JSON.parse(localStorage.getItem(KEY));
+    if (d && d.customers) return d;
+  } catch (e) {}
+  return seed();
+}
+function save() {
+  try { localStorage.setItem(KEY, JSON.stringify(db)); } catch (e) {}
+}
+function newCode() {
+  let c;
+  do { c = Array.from({ length: 6 }, () => ALPHABET[Math.floor(Math.random() * ALPHABET.length)]).join(""); }
+  while (db && db.customers[c]);
+  return c;
+}
+function seed() {
+  const now = Date.now(), H = 3600e3, D = 24 * H;
+  const mk = (name, phone, stamps, rewards, ago) => ({ name, phone, stamps, rewards, created: now - ago });
+  const d = {
+    config: { need: 8, reward: "Café de la casa gratis" },
+    me: null,
+    customers: {
+      K7MQ4P: mk("Mariana", "4421234567", 5, 1, 40 * D),
+      R2TXW9: mk("Luis", "4429876543", 8, 0, 20 * D),
+      H8NB3C: mk("Sofía", "4425550192", 2, 3, 90 * D),
+    },
+    log: [
+      { t: now - 2 * H, code: "R2TXW9", type: "stamp" },
+      { t: now - 5 * H, code: "K7MQ4P", type: "stamp" },
+      { t: now - 1 * D, code: "H8NB3C", type: "redeem" },
+      { t: now - 1 * D - 3 * H, code: "H8NB3C", type: "stamp" },
+    ],
+  };
+  return d;
+}
+
+let db = load();
+let unlocked = false;
+let selected = null;
+let lastStampAnim = 0;
+
+/* ---------- utilidades de UI ---------- */
+let toastT;
+function toast(msg) {
+  const t = $("toast");
+  t.textContent = msg; t.classList.add("show");
+  clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove("show"), 2400);
+}
+function ago(t) {
+  const m = Math.round((Date.now() - t) / 60000);
+  if (m < 1) return "ahora";
+  if (m < 60) return "hace " + m + " min";
+  const h = Math.round(m / 60);
+  if (h < 24) return "hace " + h + " h";
+  const d = Math.round(h / 24);
+  return d === 1 ? "ayer" : "hace " + d + " días";
+}
+function label(e) {
+  return e.type === "stamp" ? "Sello" : e.type === "redeem" ? "Premio canjeado" : "Tarjeta creada";
+}
+
+/* ---------- vista cliente ---------- */
+function renderCliente() {
+  const { need, reward } = db.config;
+  const me = db.me && db.customers[db.me];
+  $("signupPitch").textContent = `Junta ${need} sellos y el ${ordinal(need + 1)} es gratis: ${reward.toLowerCase()}. Sin apps, sin tarjetas de papel.`;
+  $("signup").hidden = !!me;
+  $("myCard").hidden = !me;
+  if (!me) return;
+
+  const ready = me.stamps >= need;
+  $("cReward").textContent = reward;
+  $("cCount").textContent = `${me.stamps} / ${need}`;
+  const fresh = Date.now() - lastStampAnim < 1500;
+  let html = "";
+  for (let i = 0; i < need; i++) {
+    const on = i < me.stamps;
+    const r = ((i * 37) % 17) - 8; // inclinación fija por casilla, "a mano"
+    html += `<div class="slot${on ? " on" : ""}${on && fresh && i === me.stamps - 1 ? " new" : ""}" style="--r:${r}deg">${on ? CUP : i + 1}</div>`;
+  }
+  html += `<div class="slot gift${ready ? " ready" : ""}" title="Premio">${GIFT}</div>`;
+  $("cStamps").innerHTML = html;
+
+  const left = need - me.stamps;
+  $("cProgress").innerHTML = ready
+    ? `<b>¡Ya ganaste!</b> Tu próxima visita: ${esc(reward.toLowerCase())}. Avísale al cajero.`
+    : `Te ${left === 1 ? "falta" : "faltan"} <b>${left} ${left === 1 ? "sello" : "sellos"}</b> para tu premio.`;
+  $("cName").textContent = me.name;
+  $("cRewards").textContent = me.rewards ? `${me.rewards} ${me.rewards === 1 ? "premio ganado" : "premios ganados"}` : "Cliente desde " + new Date(me.created).toLocaleDateString("es-MX", { month: "short", year: "numeric" });
+
+  $("cCode").textContent = fmtCode(db.me);
+  renderQr($("cQr"), db.me);
+
+  $("cRules").innerHTML = [
+    `Un sello por cada compra.`,
+    `Al juntar ${need} sellos, el ${ordinal(need + 1)} va por nuestra cuenta: ${esc(reward.toLowerCase())}.`,
+    `Tu tarjeta está ligada a tu WhatsApp: si cambias de celular no pierdes tus sellos.`,
+  ].map(r => `<li>${r}</li>`).join("");
+
+  const mine = db.log.filter(e => e.code === db.me).slice(0, 8);
+  $("cHistory").innerHTML = mine.length
+    ? mine.map(e => `<li><span>${label(e)}</span><time>${ago(e.t)}</time></li>`).join("")
+    : `<li><span style="color:var(--muted)">Aún no tienes visitas. ¡Te esperamos!</span></li>`;
+}
+
+function renderQr(el, code) {
+  if (typeof qrcode !== "function") { el.textContent = fmtCode(code); return; }
+  const qr = qrcode(0, "M");
+  qr.addData("LEALTAD:" + code);
+  qr.make();
+  el.innerHTML = qr.createSvgTag({ cellSize: 4, margin: 0, scalable: true });
+}
+
+$("signupForm").addEventListener("submit", e => {
+  e.preventDefault();
+  const name = $("suName").value.trim();
+  const phone = digits($("suPhone").value).slice(-10);
+  if (!name) return ($("suErr").textContent = "Escribe tu nombre.");
+  if (phone.length !== 10) return ($("suErr").textContent = "El WhatsApp debe tener 10 dígitos.");
+  $("suErr").textContent = "";
+  const existing = Object.keys(db.customers).find(c => db.customers[c].phone === phone);
+  if (existing) {
+    db.me = existing;
+    toast("¡Qué gusto verte de nuevo, " + db.customers[existing].name + "!");
+  } else {
+    const code = newCode();
+    db.customers[code] = { name, phone, stamps: 0, rewards: 0, created: Date.now() };
+    db.log.unshift({ t: Date.now(), code, type: "join" });
+    db.me = code;
+    toast("¡Listo! Tu tarjeta está creada.");
+  }
+  save(); renderAll();
+});
+$("logout").addEventListener("click", () => {
+  db.me = null; save();
+  $("suName").value = ""; $("suPhone").value = "";
+  renderAll();
+});
+
+/* ---------- vista negocio ---------- */
+function renderCaja() {
+  $("lock").hidden = unlocked;
+  $("desk").hidden = !unlocked;
+  if (!unlocked) return;
+  const { need } = db.config;
+
+  // resultados de búsqueda
+  const q = $("q").value.trim().toLowerCase();
+  const qc = normCode(q), qd = digits(q);
+  let list = Object.entries(db.customers);
+  if (q) list = list.filter(([c, x]) => (qc && c.includes(qc)) || x.name.toLowerCase().includes(q) || (qd.length >= 3 && x.phone.includes(qd)));
+  list.sort((a, b) => lastSeen(b[0]) - lastSeen(a[0]));
+  $("results").innerHTML = list.slice(0, 6).map(([c, x]) => `
+    <li><button type="button" data-code="${c}">
+      <span><b>${esc(x.name)}</b><small>${fmtCode(c)} · ${fmtPhone(x.phone)}</small></span>
+      <span class="pill${x.stamps >= need ? " ready" : ""}">${x.stamps >= need ? "Premio listo" : x.stamps + " / " + need}</span>
+    </button></li>`).join("") || `<li class="hint">Nadie coincide con “${esc(q)}”.</li>`;
+
+  // cliente seleccionado
+  const s = selected && db.customers[selected];
+  $("sel").hidden = !s;
+  if (s) {
+    const ready = s.stamps >= need;
+    $("sName").textContent = s.name;
+    $("sMeta").textContent = `${fmtCode(selected)} · ${fmtPhone(s.phone)} · ${s.rewards} ${s.rewards === 1 ? "premio" : "premios"}`;
+    $("sMini").innerHTML = Array.from({ length: need }, (_, i) => `<i class="${i < s.stamps ? "on" : ""}"></i>`).join("") + `<i class="gift${ready ? " ready" : ""}"></i>`;
+    $("sStatus").innerHTML = ready
+      ? `<b style="color:var(--ok)">Tiene su premio listo:</b> ${esc(db.config.reward.toLowerCase())}.`
+      : `Lleva ${s.stamps} de ${need}. Le ${need - s.stamps === 1 ? "falta" : "faltan"} ${need - s.stamps}.`;
+    $("addStamp").disabled = ready;
+    $("redeem").disabled = !ready;
+    $("undo").hidden = !(db.log[0] && db.log[0].code === selected && db.log[0].type !== "join");
+  }
+
+  // estadísticas y actividad
+  const today = new Date(); today.setHours(0, 0, 0, 0);
+  $("stClients").textContent = Object.keys(db.customers).length;
+  $("stToday").textContent = db.log.filter(e => e.type === "stamp" && e.t >= today).length;
+  $("stRedeemed").textContent = Object.values(db.customers).reduce((n, x) => n + x.rewards, 0);
+  $("activity").innerHTML = db.log.slice(0, 8).map(e => {
+    const x = db.customers[e.code];
+    return `<li><span>${label(e)} · <b>${esc(x ? x.name : "—")}</b></span><time>${ago(e.t)}</time></li>`;
+  }).join("") || `<li class="hint">Sin movimientos todavía.</li>`;
+
+  if (document.activeElement !== $("cfgNeed")) $("cfgNeed").value = need;
+  if (document.activeElement !== $("cfgReward")) $("cfgReward").value = db.config.reward;
+}
+function lastSeen(code) {
+  const e = db.log.find(e => e.code === code);
+  return e ? e.t : db.customers[code].created;
+}
+function select(code) {
+  selected = code;
+  renderCaja();
+  $("sel").scrollIntoView({ behavior: "smooth", block: "nearest" });
+}
+
+$("pinForm").addEventListener("submit", e => {
+  e.preventDefault();
+  if ($("pin").value === PIN) { unlocked = true; $("pin").value = ""; $("pinErr").textContent = ""; renderCaja(); }
+  else $("pinErr").textContent = "PIN incorrecto.";
+});
+$("q").addEventListener("input", () => {
+  // si escriben/pegan un código exacto, se abre directo
+  const c = normCode($("q").value);
+  if (db.customers[c]) { select(c); } else renderCaja();
+});
+$("results").addEventListener("click", e => {
+  const b = e.target.closest("button[data-code]");
+  if (b) select(b.dataset.code);
+});
+$("sClose").addEventListener("click", () => { selected = null; renderCaja(); });
+
+$("addStamp").addEventListener("click", () => {
+  const s = db.customers[selected];
+  if (!s || s.stamps >= db.config.need) return;
+  s.stamps++;
+  db.log.unshift({ t: Date.now(), code: selected, type: "stamp" });
+  lastStampAnim = Date.now();
+  save(); renderAll();
+  toast(s.stamps >= db.config.need ? `¡${s.name} completó su tarjeta! 🎉` : `Sello ${s.stamps} de ${db.config.need} para ${s.name}`);
+});
+$("redeem").addEventListener("click", () => {
+  const s = db.customers[selected];
+  if (!s || s.stamps < db.config.need) return;
+  s.stamps = 0; s.rewards++;
+  db.log.unshift({ t: Date.now(), code: selected, type: "redeem", prev: db.config.need });
+  save(); renderAll();
+  toast(`Premio entregado a ${s.name}. Su tarjeta empieza de nuevo.`);
+});
+$("undo").addEventListener("click", () => {
+  const e = db.log[0], s = e && db.customers[e.code];
+  if (!s || e.code !== selected) return;
+  if (e.type === "stamp") s.stamps = Math.max(0, s.stamps - 1);
+  else if (e.type === "redeem") { s.stamps = e.prev || db.config.need; s.rewards = Math.max(0, s.rewards - 1); }
+  else return;
+  db.log.shift(); save(); renderAll(); toast("Movimiento deshecho.");
+});
+
+$("cfgSave").addEventListener("click", () => {
+  const n = Math.round(Number($("cfgNeed").value));
+  const r = $("cfgReward").value.trim();
+  if (!(n >= 3 && n <= 14)) return toast("Elige entre 3 y 14 sellos.");
+  if (!r) return toast("Escribe el premio.");
+  db.config.need = n; db.config.reward = r;
+  save(); renderAll(); toast("Configuración guardada.");
+});
+$("lockBtn").addEventListener("click", () => { unlocked = false; selected = null; stopScan(); renderCaja(); });
+$("resetBtn").addEventListener("click", () => {
+  if (!confirm("¿Borrar todos los datos de la demo?")) return;
+  try { localStorage.removeItem(KEY); } catch (e) {}
+  db = seed(); selected = null; save(); renderAll(); toast("Demo reiniciada.");
+});
+
+/* ---------- escáner QR (BarcodeDetector: Chrome/Android y Safari reciente) ---------- */
+let stream = null, scanning = false;
+$("scanBtn").addEventListener("click", async () => {
+  if (scanning) return stopScan();
+  $("scanErr").textContent = "";
+  if (!("BarcodeDetector" in window) || !navigator.mediaDevices) {
+    $("scanErr").textContent = "Este navegador no puede escanear. Escribe el código que aparece bajo el QR.";
+    return;
+  }
+  try {
+    const det = new BarcodeDetector({ formats: ["qr_code"] });
+    stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
+    const v = $("cam"); v.srcObject = stream; v.hidden = false; await v.play();
+    scanning = true; $("scanBtn").lastChild.textContent = " Detener";
+    const tick = async () => {
+      if (!scanning) return;
+      try {
+        const [hit] = await det.detect(v);
+        const code = hit && normCode(String(hit.rawValue).replace(/^LEALTAD:/i, ""));
+        if (code && db.customers[code]) { stopScan(); $("q").value = fmtCode(code); select(code); return; }
+        if (code) $("scanErr").textContent = "Ese QR no es una tarjeta de este negocio.";
+      } catch (e) {}
+      requestAnimationFrame(tick);
+    };
+    tick();
+  } catch (e) {
+    stopScan();
+    $("scanErr").textContent = "No pudimos abrir la cámara. Escribe el código manualmente.";
+  }
+});
+function stopScan() {
+  scanning = false;
+  if (stream) stream.getTracks().forEach(t => t.stop());
+  stream = null; $("cam").hidden = true;
+  $("scanBtn").lastChild.textContent = " Escanear QR";
+}
+
+/* ---------- navegación ---------- */
+function setView(v) {
+  document.querySelectorAll(".seg button").forEach(b => b.setAttribute("aria-pressed", b.dataset.view === v));
+  $("vCliente").hidden = v !== "cliente";
+  $("vCaja").hidden = v !== "caja";
+  if (v !== "caja") stopScan();
+  renderAll();
+  try { history.replaceState(null, "", "#" + v); } catch (e) {}
+}
+document.querySelectorAll(".seg button").forEach(b => b.addEventListener("click", () => setView(b.dataset.view)));
+function renderAll() { renderCliente(); renderCaja(); }
+
+// Si el cliente y la caja están abiertos en dos pestañas, se sincronizan.
+window.addEventListener("storage", e => { if (e.key === KEY) { db = load(); renderAll(); } });
+setInterval(renderAll, 60000); // refresca los "hace X min"
+
+save();
+setView(location.hash === "#caja" ? "caja" : "cliente");
+</script>
+</body>
+</html>
