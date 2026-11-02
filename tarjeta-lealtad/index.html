@@ -7,6 +7,9 @@
 <meta name="description" content="Prototipo de tarjeta de lealtad digital de Acueducto Digital: sellos con QR, junta 8 y el 9º es gratis.">
 <meta name="theme-color" content="#2E2219">
 <meta name="robots" content="noindex">
+<meta property="og:title" content="Demo: Tarjeta de lealtad digital">
+<meta property="og:description" content="Sellos con QR en el celular: junta 8 y el 9º es gratis. Sin apps ni tarjetas de cartón.">
+<meta property="og:image" content="https://acueducto-digital.pages.dev/img/og.jpg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,800&family=Jost:wght@400;500;600&display=swap">
@@ -41,6 +44,8 @@ button { cursor: pointer; }
 .seg { display: inline-flex; background: rgba(255,255,255,.08); border-radius: 999px; padding: 3px; }
 .seg button { border: 0; background: none; color: #F2EAE4; padding: 6px 14px; border-radius: 999px; font-size: 13px; font-weight: 500; }
 .seg button[aria-pressed="true"] { background: #E3A48A; color: #2A1712; }
+.cta-bar { background: #E3A48A; color: #2A1712; text-align: center; font-size: 14px; padding: 9px 16px; }
+.cta-bar a { color: #2A1712; font-weight: 600; }
 
 /* Encabezado del negocio */
 .biz { display: flex; align-items: center; gap: 12px; padding: 22px 0 18px; }
@@ -135,6 +140,7 @@ video { width: 100%; border-radius: 14px; background: #000; margin-top: 12px; }
     </div>
   </div>
 </div>
+<div class="cta-bar">¿Te sirve para tu negocio? <a class="wa" href="#" target="_blank" rel="noopener">Quiero una así →</a></div>
 
 <div class="wrap">
   <header class="biz">
@@ -278,6 +284,9 @@ const CUP = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-w
 const GIFT = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="8" width="18" height="5" rx="1"/><path d="M5 13v7h14v-7M12 8v12M12 8S10.5 3.5 8 4.5 9 8 12 8Zm0 0s1.5-4.5 4-3.5S15 8 12 8Z"/></svg>';
 
 const $ = id => document.getElementById(id);
+document.querySelectorAll("a.wa").forEach(a => {
+  a.href = "https://wa.me/524423894782?text=" + encodeURIComponent("Hola Daniel, vi la demo de la tarjeta de lealtad y me interesa para mi negocio.");
+});
 const esc = s => String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 const digits = s => String(s).replace(/\D/g, "");
 const fmtPhone = p => p.replace(/(\d{3})(\d{3})(\d{4})/, "$1 $2 $3");

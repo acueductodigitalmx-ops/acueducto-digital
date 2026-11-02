@@ -1,0 +1,525 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Estudio Alfarera · Inscripciones</title>
+<meta name="description" content="Demo de inscripciones en línea de Acueducto Digital: talleres con cupo, registro desde el celular y lista de quién ya pagó.">
+<meta name="theme-color" content="#3D4A3E">
+<meta name="robots" content="noindex">
+<meta property="og:title" content="Demo: Inscripciones en línea">
+<meta property="og:description" content="Registro desde el celular, cupo que se actualiza solo y lista de quién ya pagó.">
+<meta property="og:image" content="https://acueducto-digital.pages.dev/img/og.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Jost:wght@400;500;600&display=swap">
+<style>
+/* Marca de ejemplo (Estudio Alfarera). Para otro negocio cambian estos tokens y los datos de CURSOS. */
+:root {
+  --brand: #3D4A3E;
+  --brand-2: #536253;
+  --sand: #F3EEE6;
+  --paper: #FFFDF9;
+  --ink: #26241F;
+  --muted: #736C62;
+  --clay: #B8623F;
+  --clay-ink: #FFF7F1;
+  --ok: #3F7D58;
+  --warn: #B07A1A;
+  --line: #E4DCD0;
+  --display: "DM Serif Display", Georgia, serif;
+  --body: "Jost", system-ui, sans-serif;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html, body { margin: 0; }
+body { background: var(--sand); color: var(--ink); font-family: var(--body); font-size: 16px; line-height: 1.5; min-height: 100vh; }
+button, input, textarea, select { font: inherit; color: inherit; }
+button { cursor: pointer; }
+.wrap { max-width: 520px; margin: 0 auto; padding: 0 16px 56px; }
+
+/* Barra de demo */
+.demo-bar { background: #161B24; color: #F2EAE4; font-size: 13px; }
+.demo-bar .in { max-width: 520px; margin: 0 auto; padding: 10px 16px; display: flex; gap: 10px; align-items: center; justify-content: space-between; flex-wrap: wrap; }
+.demo-bar a { color: #E3A48A; }
+.seg { display: inline-flex; background: rgba(255,255,255,.08); border-radius: 999px; padding: 3px; }
+.seg button { border: 0; background: none; color: #F2EAE4; padding: 6px 14px; border-radius: 999px; font-size: 13px; font-weight: 500; }
+.seg button[aria-pressed="true"] { background: #E3A48A; color: #2A1712; }
+.cta-bar { background: #E3A48A; color: #2A1712; text-align: center; font-size: 14px; padding: 9px 16px; }
+.cta-bar a { color: #2A1712; font-weight: 600; }
+
+/* Encabezado */
+.hero { background: var(--brand); color: var(--sand); }
+.hero .in { max-width: 520px; margin: 0 auto; padding: 28px 16px 30px; }
+.hero small { font-size: 12px; letter-spacing: .2em; text-transform: uppercase; color: #E8B79E; font-weight: 600; }
+.hero h1 { font-family: var(--display); font-weight: 400; font-size: 36px; line-height: 1.05; margin: 8px 0 8px; }
+.hero p { margin: 0; color: #D7D9CE; }
+
+/* Cursos */
+.course { background: var(--paper); border: 1px solid var(--line); border-radius: 20px; padding: 20px; margin-top: 16px; }
+.course h2 { font-family: var(--display); font-weight: 400; font-size: 24px; line-height: 1.1; margin: 0; }
+.course .desc { color: var(--muted); font-size: 15px; margin: 6px 0 12px; }
+.meta { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 14px; }
+.meta span { display: inline-flex; align-items: center; gap: 6px; }
+.meta svg { width: 16px; height: 16px; color: var(--clay); flex: none; }
+.cupo { margin-top: 14px; }
+.bar { height: 8px; border-radius: 999px; background: var(--line); overflow: hidden; }
+.bar i { display: block; height: 100%; background: var(--brand-2); border-radius: 999px; }
+.bar.hot i { background: var(--clay); }
+.cupo-txt { display: flex; justify-content: space-between; font-size: 13px; color: var(--muted); margin-top: 6px; }
+.cupo-txt b { color: var(--clay); }
+.course-foot { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 16px; }
+.price { font-family: var(--display); font-size: 26px; line-height: 1; }
+.price small { font-family: var(--body); font-size: 13px; color: var(--muted); display: block; margin-top: 4px; }
+
+.btn { border: 0; border-radius: 999px; padding: 12px 20px; font-weight: 600; font-size: 15px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; }
+.btn-main { background: var(--clay); color: var(--clay-ink); }
+.btn-dark { background: var(--brand); color: var(--sand); }
+.btn-line { background: none; border: 1px solid var(--line); color: var(--ink); }
+.btn-sm { padding: 7px 13px; font-size: 13px; }
+.btn:disabled { opacity: .4; cursor: not-allowed; }
+.btn.block { width: 100%; margin-top: 16px; }
+.btn:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible { outline: 2px solid var(--clay); outline-offset: 2px; }
+
+/* Formulario */
+.panel { background: var(--paper); border: 1px solid var(--line); border-radius: 20px; padding: 20px; margin-top: 16px; }
+.panel h2 { font-family: var(--display); font-weight: 400; font-size: 24px; margin: 0 0 4px; line-height: 1.1; }
+.panel > p { margin: 0 0 8px; color: var(--muted); font-size: 15px; }
+.back { background: none; border: 0; padding: 0; color: var(--muted); font-size: 14px; margin-top: 18px; display: inline-flex; gap: 6px; align-items: center; }
+label { display: block; font-size: 14px; font-weight: 500; margin: 14px 0 6px; }
+label small { color: var(--muted); font-weight: 400; }
+input[type=text], input[type=tel], input[type=email], input[type=password], textarea { width: 100%; border: 1px solid var(--line); background: #fff; border-radius: 12px; padding: 12px 14px; font-size: 16px; }
+textarea { min-height: 76px; resize: vertical; }
+.err { color: #B23B2A; font-size: 14px; margin-top: 8px; min-height: 1em; }
+.hint { font-size: 13px; color: var(--muted); margin-top: 10px; }
+.summary { background: var(--sand); border-radius: 14px; padding: 14px; font-size: 14px; display: grid; gap: 4px; margin-top: 12px; }
+.summary b { font-weight: 600; }
+
+/* Confirmación */
+.ok-ico { width: 56px; height: 56px; border-radius: 50%; background: var(--ok); color: #fff; display: grid; place-items: center; margin-bottom: 14px; }
+.ok-ico svg { width: 30px; height: 30px; }
+.folio { font-family: ui-monospace, Menlo, monospace; font-weight: 600; letter-spacing: .08em; font-size: 20px; }
+.pay { border: 1px dashed var(--line); border-radius: 14px; padding: 14px; margin-top: 14px; font-size: 14px; display: grid; gap: 6px; }
+.pay div { display: flex; justify-content: space-between; gap: 10px; }
+.pay span { color: var(--muted); }
+
+/* Admin */
+.stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 16px; }
+.stats div { background: var(--paper); border: 1px solid var(--line); border-radius: 16px; padding: 14px 12px; }
+.stats b { display: block; font-family: var(--display); font-weight: 400; font-size: 24px; line-height: 1; }
+.stats span { font-size: 12px; color: var(--muted); }
+.chips { display: flex; gap: 8px; overflow-x: auto; padding: 2px 0 6px; margin-top: 16px; scrollbar-width: none; }
+.chips button { flex: none; border: 1px solid var(--line); background: var(--paper); border-radius: 999px; padding: 8px 14px; font-size: 14px; white-space: nowrap; }
+.chips button[aria-pressed="true"] { background: var(--brand); color: var(--sand); border-color: var(--brand); }
+.filters { display: flex; gap: 6px; margin: 14px 0 4px; flex-wrap: wrap; }
+.filters button { border: 0; background: var(--sand); border-radius: 999px; padding: 6px 12px; font-size: 13px; }
+.filters button[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
+.people { list-style: none; padding: 0; margin: 8px 0 0; }
+.people li { border-top: 1px solid var(--line); padding: 12px 0; display: grid; grid-template-columns: 1fr auto; gap: 6px 10px; align-items: center; }
+.people li:first-child { border-top: 0; }
+.people .who b { display: block; font-weight: 600; }
+.people .who small { color: var(--muted); font-size: 13px; }
+.people .acts { grid-column: 1 / -1; display: flex; gap: 6px 12px; flex-wrap: wrap; align-items: center; }
+.lnk { background: none; border: 0; padding: 4px 0; font-size: 13px; color: var(--muted); text-decoration: underline; }
+.pill { font-size: 12px; font-weight: 600; border-radius: 999px; padding: 3px 10px; white-space: nowrap; }
+.pill.paid { background: #E3F0E7; color: var(--ok); }
+.pill.pend { background: #F7ECD6; color: var(--warn); }
+.pill.wait { background: var(--sand); color: var(--muted); }
+.empty { color: var(--muted); font-size: 14px; padding: 12px 0; }
+.course-head { display: flex; justify-content: space-between; align-items: start; gap: 10px; }
+.money { font-size: 14px; color: var(--muted); margin-top: 10px; }
+.money b { color: var(--ink); }
+
+/* Modal */
+.modal { position: fixed; inset: 0; background: rgba(20,22,18,.55); display: grid; place-items: end center; padding: 16px; z-index: 10; }
+.modal .box { background: var(--paper); border-radius: 22px; padding: 22px; width: 100%; max-width: 440px; }
+.modal h3 { font-family: var(--display); font-weight: 400; font-size: 22px; margin: 0 0 10px; }
+.bubble { background: #DCF8C6; color: #1b2a1b; border-radius: 14px 14px 4px 14px; padding: 12px 14px; font-size: 15px; white-space: pre-line; }
+@media (min-width: 560px) { .modal { place-items: center; } }
+
+.toast { position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%) translateY(20px); background: var(--ink); color: var(--paper); padding: 12px 20px; border-radius: 999px; font-size: 15px; opacity: 0; transition: .25s; pointer-events: none; max-width: calc(100% - 32px); text-align: center; z-index: 20; }
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+@media (prefers-reduced-motion: reduce) { .toast { transition: none; } }
+</style>
+</head>
+<body>
+
+<div class="demo-bar">
+  <div class="in">
+    <span>Demo · <a href="../">Acueducto Digital</a></span>
+    <div class="seg" role="group" aria-label="Cambiar vista">
+      <button type="button" data-view="publico" aria-pressed="true">Alumno</button>
+      <button type="button" data-view="admin" aria-pressed="false">Negocio</button>
+    </div>
+  </div>
+</div>
+<div class="cta-bar">¿Das talleres? <a class="wa" data-msg="Hola Daniel, vi la demo de inscripciones y me interesa para mi negocio." href="#" target="_blank" rel="noopener">Quiero una así →</a></div>
+
+<!-- ===== Vista pública ===== -->
+<div id="vPublico">
+  <header class="hero"><div class="in">
+    <small>Taller de cerámica · Querétaro</small>
+    <h1>Estudio Alfarera</h1>
+    <p>Elige tu taller, aparta tu lugar y paga por transferencia o en el estudio.</p>
+  </div></header>
+
+  <div class="wrap">
+    <section id="list"></section>
+
+    <section id="form" hidden>
+      <button class="back" type="button" data-back>← Ver todos los talleres</button>
+      <div class="panel">
+        <h2 id="fTitle"></h2>
+        <p id="fMeta"></p>
+        <form id="signupForm" novalidate>
+          <label for="fName">Nombre completo</label>
+          <input id="fName" type="text" autocomplete="name" placeholder="Ej. Mariana López">
+          <label for="fPhone">WhatsApp <small>(10 dígitos)</small></label>
+          <input id="fPhone" type="tel" inputmode="numeric" autocomplete="tel-national" placeholder="442 123 4567">
+          <label for="fEmail">Correo <small>(opcional)</small></label>
+          <input id="fEmail" type="email" autocomplete="email" placeholder="tu@correo.com">
+          <label for="fNotes">¿Algo que debamos saber? <small>(opcional)</small></label>
+          <textarea id="fNotes" placeholder="Edad del niño, experiencia previa, alergias…"></textarea>
+          <div class="summary" id="fSummary"></div>
+          <div class="err" id="fErr" role="alert"></div>
+          <button class="btn btn-main block" type="submit" id="fSubmit">Apartar mi lugar</button>
+        </form>
+      </div>
+    </section>
+
+    <section id="done" hidden>
+      <div class="panel" style="margin-top:24px">
+        <div class="ok-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div>
+        <h2 id="dTitle"></h2>
+        <p id="dText"></p>
+        <div style="margin-top:10px;font-size:14px;color:var(--muted)">Tu folio</div>
+        <div class="folio" id="dFolio"></div>
+        <div class="pay" id="dPay"></div>
+        <button class="btn btn-main block" type="button" id="dSend">Enviar comprobante por WhatsApp</button>
+        <p class="hint">Te mandamos un recordatorio por WhatsApp un día antes del taller.</p>
+      </div>
+      <button class="back" type="button" data-back>← Ver más talleres</button>
+    </section>
+  </div>
+</div>
+
+<!-- ===== Vista negocio ===== -->
+<div id="vAdmin" hidden>
+  <div class="wrap">
+    <section id="lock" class="panel" style="margin-top:24px">
+      <h2>Panel del estudio</h2>
+      <p>Solo tú ves quién se inscribió y quién ya pagó.</p>
+      <form id="pinForm">
+        <label for="pin">PIN</label>
+        <input id="pin" type="password" inputmode="numeric" maxlength="6" autocomplete="off">
+        <div class="err" id="pinErr" role="alert"></div>
+        <button class="btn btn-dark block" type="submit">Entrar</button>
+      </form>
+      <p class="hint">PIN de la demo: <b>1234</b></p>
+    </section>
+
+    <section id="desk" hidden>
+      <div class="stats">
+        <div><b id="stPeople">0</b><span>inscritos</span></div>
+        <div><b id="stPaid">$0</b><span>cobrado</span></div>
+        <div><b id="stPend">$0</b><span>por cobrar</span></div>
+      </div>
+
+      <div class="chips" id="chips" role="group" aria-label="Elegir taller"></div>
+
+      <div class="panel" style="margin-top:8px">
+        <div class="course-head">
+          <div><h2 id="aTitle"></h2><p style="margin:2px 0 0;color:var(--muted);font-size:14px" id="aMeta"></p></div>
+          <button class="btn btn-line btn-sm" id="exportBtn" type="button" style="white-space:nowrap;flex:none" title="Descargar lista para Excel">⬇ Excel</button>
+        </div>
+        <div class="cupo"><div class="bar" id="aBar"><i></i></div><div class="cupo-txt" id="aCupo"></div></div>
+        <div class="money" id="aMoney"></div>
+        <div class="filters" id="filters" role="group" aria-label="Filtrar">
+          <button type="button" data-f="todos" aria-pressed="true">Todos</button>
+          <button type="button" data-f="pend" aria-pressed="false">Por pagar</button>
+          <button type="button" data-f="paid" aria-pressed="false">Pagados</button>
+          <button type="button" data-f="wait" aria-pressed="false">Lista de espera</button>
+        </div>
+        <ul class="people" id="people"></ul>
+      </div>
+
+      <div class="row" style="display:flex;gap:10px;margin-top:16px">
+        <button class="btn btn-line" style="flex:1" id="lockBtn" type="button">Cerrar panel</button>
+        <button class="btn btn-line" style="flex:1" id="resetBtn" type="button">Reiniciar demo</button>
+      </div>
+    </section>
+  </div>
+</div>
+
+<div class="modal" id="modal" hidden role="dialog" aria-modal="true" aria-labelledby="mTitle">
+  <div class="box">
+    <h3 id="mTitle"></h3>
+    <div class="bubble" id="mMsg"></div>
+    <p class="hint" id="mHint"></p>
+    <button class="btn btn-dark block" type="button" id="mClose">Entendido</button>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+/* -------------------------------------------------------------------------
+   Demo: los datos viven en localStorage de este navegador para poder probar
+   alumno y negocio en el mismo celular. En la versión real van a una base
+   de datos y el PIN se valida en el servidor.
+---------------------------------------------------------------------------*/
+const KEY = "acueducto-inscripciones-demo-v1";
+const PIN = "1234";
+const WA = "524423894782";
+const DAY = 864e5;
+
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const digits = s => String(s).replace(/\D/g, "");
+const money = n => "$" + n.toLocaleString("es-MX");
+const fmtPhone = p => p.replace(/(\d{3})(\d{3})(\d{4})/, "$1 $2 $3");
+const fmtDate = t => new Date(t).toLocaleDateString("es-MX", { weekday: "long", day: "numeric", month: "long" });
+const shortDate = t => new Date(t).toLocaleDateString("es-MX", { day: "numeric", month: "short" });
+
+document.querySelectorAll("a.wa").forEach(a => { a.href = "https://wa.me/" + WA + "?text=" + encodeURIComponent(a.dataset.msg); });
+
+/* Fechas relativas a hoy para que la demo nunca se vea vieja */
+function nextDow(dow, weeksAhead = 0) {
+  const d = new Date(); d.setHours(10, 0, 0, 0);
+  d.setDate(d.getDate() + ((dow - d.getDay() + 7) % 7 || 7) + weeksAhead * 7);
+  return d.getTime();
+}
+
+function seed() {
+  const courses = [
+    { id: "ini", name: "Cerámica desde cero", desc: "Modelado a mano: pellizco, churros y placas. Te llevas 3 piezas horneadas y esmaltadas.", when: "Sábados 10:00–12:30", sessions: 4, start: nextDow(6), price: 1800, cap: 8 },
+    { id: "torno", name: "Torno intensivo", desc: "Centrado, levantado y torneado de cilindros y cuencos. Ideal si ya tomaste un curso básico.", when: "Martes y jueves 19:00–21:00", sessions: 6, start: nextDow(2, 1), price: 2400, cap: 6 },
+    { id: "ninos", name: "Barro para niños (7 a 12 años)", desc: "Creatividad, paciencia y manos en el barro. Material incluido y mandil prestado.", when: "Miércoles 17:00–18:30", sessions: 4, start: nextDow(3, 1), price: 1200, cap: 10 },
+    { id: "pareja", name: "Taza en pareja · un día", desc: "Una tarde para hacer dos tazas juntos. Incluye vino o café y tus tazas horneadas en 2 semanas.", when: "Viernes 19:00–21:30", sessions: 1, start: nextDow(5, 1), price: 950, cap: 12, unit: "por persona" },
+  ];
+  const now = Date.now();
+  const p = (courseId, name, phone, status, ago, notes = "") => ({ id: Math.random().toString(36).slice(2, 9), courseId, name, phone, email: "", notes, status, created: now - ago * 36e5 });
+  const signups = [
+    p("ini", "Daniela Ruiz", "4420001101", "paid", 120), p("ini", "Jorge Méndez", "4420001102", "paid", 96),
+    p("ini", "Paola Herrera", "4420001103", "pend", 30), p("ini", "Andrea Soto", "4420001104", "paid", 70),
+    p("ini", "Ricardo Luna", "4420001105", "pend", 5), p("ini", "Fernanda Gil", "4420001106", "paid", 50, "Ya tomé un taller en otro estudio"),
+    p("torno", "Iván Castro", "4420001107", "paid", 200), p("torno", "Lucía Ortega", "4420001108", "paid", 150),
+    p("torno", "Marco Pineda", "4420001109", "pend", 48), p("torno", "Elena Vargas", "4420001110", "paid", 80),
+    p("torno", "Sergio Ramos", "4420001111", "paid", 60), p("torno", "Natalia Cruz", "4420001112", "paid", 20),
+    p("torno", "Pablo Ibarra", "4420001113", "wait", 3),
+    p("ninos", "Mateo Salinas (9 años)", "4420001114", "paid", 100), p("ninos", "Regina Torres (7 años)", "4420001115", "pend", 26, "Alérgica al látex"),
+    p("ninos", "Emilio Bravo (11 años)", "4420001116", "paid", 40),
+    p("pareja", "Karla y Diego", "4420001117", "paid", 12), p("pareja", "Karla y Diego (2ª persona)", "4420001117", "paid", 12),
+    p("pareja", "Sofía Montes", "4420001118", "pend", 2),
+  ];
+  return { courses, signups, seq: 140 };
+}
+function load() {
+  try { const d = JSON.parse(localStorage.getItem(KEY)); if (d && d.courses) return d; } catch (e) {}
+  return seed();
+}
+function save() { try { localStorage.setItem(KEY, JSON.stringify(db)); } catch (e) {} }
+
+let db = load();
+let current = null;   // curso elegido en vista pública
+let unlocked = false, adminCourse = db.courses[0].id, filter = "todos";
+
+const course = id => db.courses.find(c => c.id === id);
+const enrolled = id => db.signups.filter(s => s.courseId === id && s.status !== "wait");
+const waiting = id => db.signups.filter(s => s.courseId === id && s.status === "wait");
+const left = c => Math.max(0, c.cap - enrolled(c.id).length);
+
+let toastT;
+function toast(msg) { const t = $("toast"); t.textContent = msg; t.classList.add("show"); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove("show"), 2600); }
+function modal(title, msg, hint) {
+  $("mTitle").textContent = title; $("mMsg").textContent = msg; $("mHint").textContent = hint || "";
+  $("modal").hidden = false; $("mClose").focus();
+}
+$("mClose").addEventListener("click", () => ($("modal").hidden = true));
+$("modal").addEventListener("click", e => { if (e.target.id === "modal") $("modal").hidden = true; });
+document.addEventListener("keydown", e => { if (e.key === "Escape") $("modal").hidden = true; });
+
+const ICON = {
+  cal: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>',
+  clock: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>',
+  rep: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12a8 8 0 0 1 14-5.3M20 12a8 8 0 0 1-14 5.3"/><path d="M18 3v4h-4M6 21v-4h4"/></svg>',
+};
+function metaHTML(c) {
+  return `<div class="meta">
+    <span>${ICON.cal}Inicia ${fmtDate(c.start)}</span>
+    <span>${ICON.clock}${esc(c.when)}</span>
+    <span>${ICON.rep}${c.sessions === 1 ? "Una sesión" : c.sessions + " sesiones"}</span>
+  </div>`;
+}
+
+/* ---------- vista pública ---------- */
+function renderList() {
+  $("list").innerHTML = db.courses.map(c => {
+    const l = left(c), pct = Math.round((c.cap - l) / c.cap * 100);
+    const hot = l <= 2;
+    return `<article class="course">
+      <h2>${esc(c.name)}</h2>
+      <p class="desc">${esc(c.desc)}</p>
+      ${metaHTML(c)}
+      <div class="cupo">
+        <div class="bar${hot ? " hot" : ""}"><i style="width:${pct}%"></i></div>
+        <div class="cupo-txt"><span>${c.cap - l} de ${c.cap} lugares ocupados</span>${l === 0 ? "<b>Cupo lleno</b>" : hot ? `<b>¡${l === 1 ? "Queda 1 lugar" : "Quedan " + l + " lugares"}!</b>` : `<span>Quedan ${l}</span>`}</div>
+      </div>
+      <div class="course-foot">
+        <div class="price">${money(c.price)}<small>${c.unit || "curso completo"}</small></div>
+        <button class="btn ${l === 0 ? "btn-line" : "btn-main"}" type="button" data-enroll="${c.id}">${l === 0 ? "Lista de espera" : "Inscribirme"}</button>
+      </div>
+    </article>`;
+  }).join("");
+}
+function showPublic(step) {
+  $("list").hidden = step !== "list"; $("form").hidden = step !== "form"; $("done").hidden = step !== "done";
+  window.scrollTo(0, 0);
+}
+$("list").addEventListener("click", e => {
+  const b = e.target.closest("[data-enroll]"); if (!b) return;
+  current = course(b.dataset.enroll);
+  const full = left(current) === 0;
+  $("fTitle").textContent = full ? "Lista de espera · " + current.name : current.name;
+  $("fMeta").textContent = full ? "El cupo está lleno. Si alguien se da de baja, te avisamos por WhatsApp en orden de llegada." : `Inicia ${fmtDate(current.start)} · ${current.when}`;
+  $("fSummary").innerHTML = `<div><b>Total:</b> ${money(current.price)} ${current.unit ? "(" + current.unit + ")" : ""}</div><div>Apartas hoy y pagas en las próximas 48 h por transferencia o en el estudio.</div>`;
+  $("fSummary").hidden = full;
+  $("fSubmit").textContent = full ? "Anotarme en lista de espera" : "Apartar mi lugar";
+  $("fErr").textContent = "";
+  showPublic("form");
+  $("fName").focus();
+});
+document.querySelectorAll("[data-back]").forEach(b => b.addEventListener("click", () => { renderList(); showPublic("list"); }));
+
+$("signupForm").addEventListener("submit", e => {
+  e.preventDefault();
+  const name = $("fName").value.trim(), phone = digits($("fPhone").value).slice(-10);
+  const email = $("fEmail").value.trim(), notes = $("fNotes").value.trim();
+  if (name.length < 2) return ($("fErr").textContent = "Escribe tu nombre.");
+  if (phone.length !== 10) return ($("fErr").textContent = "El WhatsApp debe tener 10 dígitos.");
+  if (email && !/^\S+@\S+\.\S+$/.test(email)) return ($("fErr").textContent = "Revisa tu correo.");
+  if (db.signups.some(s => s.courseId === current.id && s.phone === phone)) return ($("fErr").textContent = "Ese WhatsApp ya está inscrito en este taller.");
+  const wait = left(current) === 0;
+  const folio = "ALF-" + String(++db.seq).padStart(4, "0");
+  db.signups.push({ id: folio, courseId: current.id, name, phone, email, notes, status: wait ? "wait" : "pend", created: Date.now() });
+  save();
+  $("signupForm").reset();
+
+  $("dTitle").textContent = wait ? "¡Estás en la lista de espera!" : "¡Tu lugar está apartado!";
+  $("dText").textContent = wait
+    ? `Si se libera un lugar en ${current.name}, te escribimos por WhatsApp.`
+    : `${name.split(" ")[0]}, te esperamos en ${current.name}. Tienes 48 horas para completar tu pago.`;
+  $("dFolio").textContent = folio;
+  $("dPay").hidden = wait; $("dSend").hidden = wait;
+  $("dPay").innerHTML = `
+    <div><span>Monto</span><b>${money(current.price)}</b></div>
+    <div><span>Banco</span><b>Banco de ejemplo</b></div>
+    <div><span>CLABE</span><b>0000 0000 0000 0000 00</b></div>
+    <div><span>Concepto</span><b>${folio}</b></div>
+    <div style="color:var(--muted)">O paga en efectivo o tarjeta en el estudio.</div>`;
+  $("dSend").onclick = () => modal("Así le llega al estudio", `Hola, soy ${name}. Les mando mi comprobante de pago para ${current.name}.\nFolio: ${folio}`, "En la versión real este botón abre el WhatsApp del negocio con el mensaje ya escrito, y tú solo adjuntas la foto.");
+  showPublic("done");
+});
+
+/* ---------- vista negocio ---------- */
+function renderAdmin() {
+  $("lock").hidden = unlocked; $("desk").hidden = !unlocked;
+  if (!unlocked) return;
+  const active = db.signups.filter(s => s.status !== "wait");
+  const priceOf = s => course(s.courseId).price;
+  $("stPeople").textContent = active.length;
+  $("stPaid").textContent = money(active.filter(s => s.status === "paid").reduce((n, s) => n + priceOf(s), 0));
+  $("stPend").textContent = money(active.filter(s => s.status === "pend").reduce((n, s) => n + priceOf(s), 0));
+
+  $("chips").innerHTML = db.courses.map(c => {
+    const pend = enrolled(c.id).filter(s => s.status === "pend").length;
+    return `<button type="button" data-c="${c.id}" aria-pressed="${c.id === adminCourse}">${esc(c.name.split(" (")[0])}${pend ? ` · ${pend} por pagar` : ""}</button>`;
+  }).join("");
+
+  const c = course(adminCourse), en = enrolled(c.id), l = left(c);
+  $("aTitle").textContent = c.name;
+  $("aMeta").textContent = `Inicia ${shortDate(c.start)} · ${c.when}`;
+  $("aBar").className = "bar" + (l <= 2 ? " hot" : "");
+  $("aBar").firstElementChild.style.width = Math.round(en.length / c.cap * 100) + "%";
+  $("aCupo").innerHTML = `<span>${en.length} de ${c.cap} lugares</span><span>${waiting(c.id).length ? waiting(c.id).length + " en espera" : l === 0 ? "<b>Lleno</b>" : "Quedan " + l}</span>`;
+  const paid = en.filter(s => s.status === "paid");
+  $("aMoney").innerHTML = `Cobrado <b>${money(paid.length * c.price)}</b> · Falta <b>${money((en.length - paid.length) * c.price)}</b>`;
+
+  document.querySelectorAll("#filters button").forEach(b => b.setAttribute("aria-pressed", b.dataset.f === filter));
+  let rows = db.signups.filter(s => s.courseId === c.id);
+  if (filter !== "todos") rows = rows.filter(s => s.status === filter);
+  const order = { pend: 0, paid: 1, wait: 2 };
+  rows.sort((a, b) => order[a.status] - order[b.status] || a.created - b.created);
+  const hrs = s => Math.round((Date.now() - s.created) / 36e5);
+  $("people").innerHTML = rows.map(s => {
+    const pill = s.status === "paid" ? '<span class="pill paid">Pagado</span>' : s.status === "pend" ? `<span class="pill pend">Por pagar${hrs(s) > 24 ? " · " + Math.floor(hrs(s) / 24) + " d" : ""}</span>` : '<span class="pill wait">En espera</span>';
+    let acts = "";
+    if (s.status === "pend") acts = `<button class="btn btn-dark btn-sm" data-act="pay" data-id="${s.id}">Marcar pagado</button><button class="btn btn-line btn-sm" data-act="remind" data-id="${s.id}">Recordar pago</button>`;
+    if (s.status === "paid") acts = `<button class="lnk" data-act="unpay" data-id="${s.id}">Deshacer pago</button>`;
+    if (s.status === "wait") acts = `<button class="btn btn-dark btn-sm" data-act="promote" data-id="${s.id}" ${l === 0 ? "disabled title='No hay lugares libres'" : ""}>Darle el lugar</button>`;
+    acts += `<button class="lnk" data-act="drop" data-id="${s.id}">Dar de baja</button>`;
+    return `<li><div class="who"><b>${esc(s.name)}</b><small>${fmtPhone(s.phone)}${s.notes ? " · " + esc(s.notes) : ""}</small></div>${pill}<div class="acts">${acts}</div></li>`;
+  }).join("") || `<li class="empty">Nadie en esta lista.</li>`;
+}
+
+$("pinForm").addEventListener("submit", e => {
+  e.preventDefault();
+  if ($("pin").value === PIN) { unlocked = true; $("pin").value = ""; $("pinErr").textContent = ""; renderAdmin(); }
+  else $("pinErr").textContent = "PIN incorrecto.";
+});
+$("chips").addEventListener("click", e => { const b = e.target.closest("[data-c]"); if (b) { adminCourse = b.dataset.c; renderAdmin(); } });
+$("filters").addEventListener("click", e => { const b = e.target.closest("[data-f]"); if (b) { filter = b.dataset.f; renderAdmin(); } });
+$("people").addEventListener("click", e => {
+  const b = e.target.closest("[data-act]"); if (!b) return;
+  const s = db.signups.find(x => x.id === b.dataset.id); if (!s) return;
+  const c = course(s.courseId), first = s.name.split(" ")[0];
+  switch (b.dataset.act) {
+    case "pay": s.status = "paid"; toast(`${first} quedó como pagado ✓`); break;
+    case "unpay": s.status = "pend"; toast("Pago deshecho."); break;
+    case "remind":
+      return modal("Recordatorio listo", `Hola ${first} 👋 Te recordamos que tu lugar en ${c.name} (inicia ${fmtDate(c.start)}) está apartado. Para confirmarlo, el pago es de ${money(c.price)}. ¡Te esperamos en Estudio Alfarera!`, "En la versión real esto abre WhatsApp con el mensaje escrito para esa persona. Tú solo le das enviar.");
+    case "promote": s.status = "pend"; s.created = Date.now(); toast(`${first} ya tiene lugar. Avísale por WhatsApp.`); break;
+    case "drop":
+      if (!confirm(`¿Dar de baja a ${s.name}?`)) return;
+      db.signups = db.signups.filter(x => x !== s);
+      toast(waiting(c.id).length && s.status !== "wait" ? "Se liberó un lugar: puedes dárselo a alguien de la lista de espera." : "Baja registrada.");
+      break;
+  }
+  save(); renderAdmin();
+});
+$("exportBtn").addEventListener("click", () => {
+  const c = course(adminCourse);
+  const label = { paid: "Pagado", pend: "Por pagar", wait: "Lista de espera" };
+  const rows = [["Nombre", "WhatsApp", "Correo", "Estado", "Notas", "Fecha de registro"]]
+    .concat(db.signups.filter(s => s.courseId === c.id).map(s => [s.name, fmtPhone(s.phone), s.email, label[s.status], s.notes, new Date(s.created).toLocaleDateString("es-MX")]));
+  const csv = "﻿" + rows.map(r => r.map(v => `"${String(v).replace(/"/g, '""')}"`).join(",")).join("\r\n");
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([csv], { type: "text/csv;charset=utf-8" }));
+  a.download = c.name.replace(/[^\wáéíóúñ ]/gi, "").trim().replace(/\s+/g, "-").toLowerCase() + ".csv";
+  a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+  toast("Lista descargada. Ábrela en Excel.");
+});
+$("lockBtn").addEventListener("click", () => { unlocked = false; renderAdmin(); });
+$("resetBtn").addEventListener("click", () => {
+  if (!confirm("¿Borrar todos los datos de la demo?")) return;
+  try { localStorage.removeItem(KEY); } catch (e) {}
+  db = seed(); adminCourse = db.courses[0].id; save(); renderAll(); toast("Demo reiniciada.");
+});
+
+/* ---------- navegación ---------- */
+function setView(v) {
+  document.querySelectorAll(".seg button").forEach(b => b.setAttribute("aria-pressed", b.dataset.view === v));
+  $("vPublico").hidden = v !== "publico"; $("vAdmin").hidden = v !== "admin";
+  if (v === "publico") showPublic("list");
+  renderAll();
+  try { history.replaceState(null, "", "#" + v); } catch (e) {}
+}
+document.querySelectorAll(".seg button").forEach(b => b.addEventListener("click", () => setView(b.dataset.view)));
+function renderAll() { renderList(); renderAdmin(); }
+window.addEventListener("storage", e => { if (e.key === KEY) { db = load(); renderAll(); } });
+
+save();
+setView(location.hash === "#admin" ? "admin" : "publico");
+</script>
+</body>
+</html>

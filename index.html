@@ -6,6 +6,15 @@
 <title>Acueducto Digital · Herramientas digitales para negocios de Querétaro</title>
 <meta name="description" content="Diseñamos páginas de citas y herramientas digitales a la medida para negocios de Querétaro. Con tu nombre, tus colores y sin complicaciones.">
 <meta name="theme-color" content="#161B24">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://acueducto-digital.pages.dev/">
+<meta property="og:title" content="Acueducto Digital · Herramientas digitales para negocios de Querétaro">
+<meta property="og:description" content="Citas en línea, catálogo con pedidos, tarjeta de lealtad e inscripciones. Con tu nombre, tus colores y sin complicaciones.">
+<meta property="og:image" content="https://acueducto-digital.pages.dev/img/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="es_MX">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-12 -22 122 106'%3E%3Crect x='-12' y='-22' width='122' height='106' rx='22' fill='%23161B24'/%3E%3Cpath d='M3 10H95 M5 60V33A14.5 14.5 0 0 1 34 33V60 M34 33A14.5 14.5 0 0 1 63 33V60 M63 33A14.5 14.5 0 0 1 92 33V60' fill='none' stroke='%23E3A48A' stroke-width='6'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -48,6 +57,7 @@ a { color: inherit; }
 .btn-primary { background: var(--cantera); color: #2A1712; }
 .btn-ghost { border: 1px solid rgba(242,234,228,.35); color: var(--on-night); }
 .btn-dark { background: var(--night); color: var(--on-night); }
+.btn-outline-dark { border: 1.5px solid rgba(42,23,18,.45); color: #2A1712; }
 .btn svg { width: 18px; height: 18px; }
 
 /* Encabezado + hero */
@@ -110,11 +120,18 @@ h2 { font-family: var(--display); font-weight: 700; font-size: clamp(30px, 5vw, 
 .case p { margin: 0; color: var(--on-night-muted); font-size: 16px; }
 .case a.link { display: inline-block; margin-top: 14px; color: var(--cantera); font-weight: 500; }
 
-/* Próximamente */
-.more { display: grid; gap: 14px; margin-top: 36px; }
-.more div { border: 1px dashed #CBBFB6; border-radius: 16px; padding: 20px 22px; }
-.more b { font-family: var(--display); font-weight: 700; font-size: 18px; }
-.more span { display: block; color: var(--muted); font-size: 15px; margin-top: 4px; }
+/* Preguntas frecuentes */
+.faq { margin-top: 36px; display: grid; gap: 12px; }
+.faq details { background: var(--paper); border: 1px solid var(--line); border-radius: 16px; }
+.faq summary { list-style: none; cursor: pointer; padding: 20px 56px 20px 22px; position: relative; font-family: var(--display); font-weight: 700; font-size: 18px; line-height: 1.25; }
+.faq summary::-webkit-details-marker { display: none; }
+.faq summary::after { content: "+"; position: absolute; right: 22px; top: 50%; transform: translateY(-50%); font-family: var(--body); font-weight: 400; font-size: 26px; color: var(--cantera-deep); transition: transform .2s; }
+.faq details[open] summary::after { transform: translateY(-50%) rotate(45deg); }
+.faq summary:focus-visible { outline: 2px solid var(--cantera); outline-offset: 2px; border-radius: 16px; }
+.faq details p { margin: 0; padding: 0 22px 20px; color: var(--muted); font-size: 16px; }
+.faq details p b { color: var(--ink); font-weight: 600; }
+.faq-cta { margin-top: 28px; display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+.faq-cta span { color: var(--muted); }
 
 /* Contacto */
 .contact { background: var(--cantera); color: #2A1712; border-radius: 28px; padding: 44px 30px; display: grid; gap: 22px; }
@@ -133,6 +150,10 @@ footer .brand b { color: var(--ink); }
   .steps { grid-template-columns: repeat(3, 1fr); }
   .cases { grid-template-columns: repeat(2, 1fr); }
   .case { grid-template-columns: 1fr; }
+  .case.featured { grid-column: 1 / -1; grid-template-columns: 270px 1fr; gap: 48px; align-items: center; padding: 36px 44px; }
+  .case.featured h3 { font-size: 34px; }
+  .case.featured p { font-size: 18px; max-width: 32em; }
+  .faq { grid-template-columns: repeat(2, 1fr); align-items: start; }
   .contact { grid-template-columns: 1.2fr .8fr; align-items: center; padding: 56px; }
 }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } .btn { transition: none; } }
@@ -220,7 +241,7 @@ footer .brand b { color: var(--ink); }
         <p>Cada herramienta se diseña con la identidad del negocio: su nombre, sus colores y sus productos o servicios.</p>
       </div>
       <div class="cases">
-        <article class="case">
+        <article class="case featured">
           <div class="phone"><div class="screen"><img src="img/maison-bel.jpg" alt="Página de reservas de Maison Bel: servicios de manos, pies y pestañas con precios" loading="lazy"></div></div>
           <div>
             <span class="badge real">Cliente real</span>
@@ -248,6 +269,15 @@ footer .brand b { color: var(--ink); }
           </div>
         </article>
         <article class="case">
+          <div class="phone"><div class="screen"><img src="img/inscripciones-ejemplo.jpg" alt="Demo de inscripciones de un taller de cerámica: cursos con fechas, precio y lugares disponibles" loading="lazy"></div></div>
+          <div>
+            <span class="badge demo">Demo en vivo</span>
+            <h3>Inscripciones</h3>
+            <p>Para cursos, talleres y escuelitas: tus alumnos se inscriben desde el celular, el cupo se actualiza solo y tú ves en un vistazo quién ya pagó y quién no.</p>
+            <a class="link" href="inscripciones/">Probar la demo →</a>
+          </div>
+        </article>
+        <article class="case">
           <div class="phone"><div class="screen"><img src="img/barberia-ejemplo.jpg" alt="Diseño de ejemplo para una barbería: cortes, fade y barba con precios" loading="lazy"></div></div>
           <div>
             <span class="badge demo">Diseño de ejemplo</span>
@@ -259,15 +289,25 @@ footer .brand b { color: var(--ink); }
     </div>
   </section>
 
-  <section>
+  <section id="preguntas">
     <div class="wrap">
       <div class="sec-head">
-        <p class="kicker">Próximamente</p>
-        <h2>Más herramientas para tu negocio</h2>
-        <p>Estamos preparando otras herramientas con la misma idea: sencillas, con tu marca y pensadas para negocios de aquí.</p>
+        <p class="kicker">Preguntas frecuentes</p>
+        <h2>Lo que nos preguntan antes de empezar</h2>
       </div>
-      <div class="more">
-        <div><b>Inscripciones</b><span>Para cursos, talleres y escuelitas: registro en línea y lista de quién ya pagó.</span></div>
+      <div class="faq">
+        <details><summary>¿Hay plazo forzoso?</summary><p><b>No.</b> Si un mes ya no la quieres, la cancelas. Y los cambios de precios, servicios u horarios no tienen costo extra: nos mandas un WhatsApp y listo.</p></details>
+        <details><summary>¿Mis clientes tienen que descargar una app?</summary><p><b>No.</b> Todo se abre desde el navegador del celular con un link o un QR. Tú también la usas así, sin instalar nada.</p></details>
+        <details><summary>¿Mis clientes ven mi agenda?</summary><p><b>No. Solo ven las horas libres.</b> Las horas ocupadas salen como “ocupado”, sin nombres ni datos de nadie. Tu agenda es privada y solo entras tú.</p></details>
+        <details><summary>¿Y si no quiero aceptar una cita?</summary><p><b>Tú confirmas o rechazas cada una.</b> Cada reserva llega como “por confirmar”. Con un toque la aceptas o liberas la hora. El control siempre es tuyo.</p></details>
+        <details><summary>¿Y las citas que agendo por teléfono?</summary><p><b>Las agregas en tu agenda y se bloquean solas.</b> Así nadie puede apartar una hora que ya diste en persona, por teléfono o por mensaje.</p></details>
+        <details><summary>¿Necesito saber de computadoras?</summary><p><b>Para nada.</b> Tú nos platicas tu negocio por WhatsApp y nosotros armamos todo. Si quieres cambiar algo después, nos escribes y lo hacemos.</p></details>
+        <details><summary>¿En cuánto tiempo queda lista?</summary><p><b>En menos de una semana.</b> Nos pasas tus servicios o productos, precios y colores, la ajustamos contigo y la compartes con tu QR.</p></details>
+        <details><summary>¿Y si mi negocio necesita algo distinto?</summary><p><b>Platícanos.</b> Además de citas, hacemos catálogos con pedidos, tarjetas de lealtad e inscripciones, y podemos armar algo a la medida de cómo trabajas.</p></details>
+      </div>
+      <div class="faq-cta">
+        <a class="btn btn-dark wa" data-msg="Hola Daniel, tengo una pregunta sobre las herramientas de Acueducto Digital." href="#" target="_blank" rel="noopener">Pregúntanos por WhatsApp</a>
+        <span>Sin compromiso.</span>
       </div>
     </div>
   </section>
@@ -283,6 +323,7 @@ footer .brand b { color: var(--ink); }
           <div class="who"><small>Daniel Pozaicer</small>442 389 4782</div>
           <div class="acts">
             <a class="btn btn-dark wa" href="#" target="_blank" rel="noopener">Escribir por WhatsApp</a>
+            <a class="btn btn-outline-dark" href="https://instagram.com/acueductodigitalmx" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg> @acueductodigitalmx</a>
           </div>
         </div>
       </div>
@@ -295,7 +336,7 @@ footer .brand b { color: var(--ink); }
     <svg viewBox="0 0 98 62" aria-hidden="true"><path d="M3 10H95 M5 60V33A14.5 14.5 0 0 1 34 33V60 M34 33A14.5 14.5 0 0 1 63 33V60 M63 33A14.5 14.5 0 0 1 92 33V60" fill="none" stroke="#1B2029" stroke-width="4"/></svg>
     <b>ACUEDUCTO<span>DIGITAL</span></b>
   </a>
-  <span>Querétaro, México · © <span id="yr"></span> Acueducto Digital</span>
+  <span>Querétaro, México · <a href="https://instagram.com/acueductodigitalmx" target="_blank" rel="noopener">Instagram</a> · © <span id="yr"></span> Acueducto Digital</span>
 </footer>
 
 <script>
